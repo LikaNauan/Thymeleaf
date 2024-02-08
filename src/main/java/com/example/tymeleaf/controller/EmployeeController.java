@@ -2,10 +2,11 @@ package com.example.tymeleaf.controller;
 
 import com.example.tymeleaf.service.impl.EmployeeServiceImpl;
 import com.example.tymeleaf.entity.Employee;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/save")
-    public String saveEmployee(@ModelAttribute("employee") Employee employee) {
+    public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee, BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            return "newemployee";
         employeeServiceImpl.save(employee);
         return "redirect:/";
     }
@@ -43,8 +46,8 @@ public class EmployeeController {
         return "update";
     }
 
-    @DeleteMapping("/deleteEmployee/{id}")
-    public String deleteThroughId(@PathVariable(value = "id") long id) {
+    @GetMapping("/deleteEmployee/{id}")
+    public String deleteById(@PathVariable(value = "id") long id) {
         employeeServiceImpl.deleteViaId(id);
         return "redirect:/";
     }
