@@ -4,7 +4,8 @@ import com.example.tymeleaf.entity.Employee;
 import java.util.List;
 
 public interface EmployeeServices {
-    List<Employee> getAllEmployee();
+    List<Employee> getAllWithLimit(int offset, int limit);
+    int getAllCount();
 
     void save(Employee employee);
 

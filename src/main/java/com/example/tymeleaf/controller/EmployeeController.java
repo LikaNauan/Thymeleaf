@@ -7,10 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,22 +20,33 @@ public class EmployeeController {
     private final EmployeeServiceImpl employeeServiceImpl;
 
     @GetMapping("/")
-    public String viewHomePage(Model model) {
-        model.addAttribute("allemplist", employeeServiceImpl.getAllEmployee());
+    public String viewHomePage(Model model,
+                               @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                               @RequestParam(value = "limit", required = false, defaultValue = "10") int limit) {
+
+        List<Employee> employeeList=employeeServiceImpl.getAllWithLimit((page - 1) * limit, page*limit);
+        model.addAttribute("allEmpList", employeeList);
+        model.addAttribute("current_page", page);
+
+        int totalPages = (int) Math.ceil(1.0 * employeeServiceImpl.getAllCount()/ limit);
+        if (totalPages > 1) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().collect(Collectors.toList());
+            model.addAttribute("page_numbers", pageNumbers);
+        }
         return "index";
     }
 
-    @GetMapping("/addnew")
+    @GetMapping("/addNew")
     public String addNewEmployee(Model model) {
         Employee employee = new Employee();
         model.addAttribute("employee", employee);
-        return "newemployee";
+        return "newEmployee";
     }
 
     @PostMapping("/save")
     public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee, BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-            return "newemployee";
+        if (bindingResult.hasErrors())
+            return "newEmployee";
         employeeServiceImpl.save(employee);
         return "redirect:/";
     }

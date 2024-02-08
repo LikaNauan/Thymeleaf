@@ -16,8 +16,16 @@ public class EmployeeServiceImpl implements EmployeeServices {
     private final EmployeeRepository empRepo;
 
     @Override
-    public List<Employee> getAllEmployee() {
-        return empRepo.findAll();
+    public List<Employee> getAllWithLimit(int offset, int limit) {
+        if(getAllCount()<limit){
+            limit = getAllCount();
+        }
+        return empRepo.findAll().subList(offset, limit);
+    }
+
+    @Override
+    public int getAllCount() {
+        return empRepo.findAll().size();
     }
 
     @Override

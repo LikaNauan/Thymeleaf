@@ -20,15 +20,15 @@
         <input type="hidden" th:field="*{id}"/>
 
         <input type="text" th:field="*{name}" class="form-control mb-4 col-4">
-        <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">error</div>
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"  class="alert alert-danger" role="alert">error</div>
         <br/>
 
         <input type="text" th:field="*{age}" class="form-control mb-4 col-4">
-        <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">error</div>
+        <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"  class="alert alert-danger" role="alert">error</div>
         <br/>
 
         <input type="text" th:field="*{email}" class="form-control mb-4 col-4">
-        <div style="color: red"  th:if="${#fields.hasErrors('email')}" th:errors="*{email}">error</div>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"  class="alert alert-danger" role="alert">error</div>
         <br/>
 
         <button type="submit" class="btn btn-info col-2"> Update Employee</button>
